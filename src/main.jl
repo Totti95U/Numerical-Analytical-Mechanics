@@ -3,8 +3,8 @@
 using ModelingToolkit
 
 """
-    Lagrangian(t, q, q_dot, L, q_to_x=nothing)
-
+    Lagrangian(t, q, q_dot, L, q_to_x=Dict{Num, Num}())
+S
 ラグランジアンを表す構造体。
 """
 struct Lagrangian
