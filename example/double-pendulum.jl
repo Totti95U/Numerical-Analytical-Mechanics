@@ -1,6 +1,6 @@
 # using Latexify
 
-include("main.jl")
+include("../src/main.jl")
 
 @variables t
 n = 2
