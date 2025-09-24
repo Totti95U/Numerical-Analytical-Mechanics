@@ -1,5 +1,3 @@
-# using Latexify
-
 include("../src/main.jl")
 
 @variables t
