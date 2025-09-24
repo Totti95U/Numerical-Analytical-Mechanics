@@ -17,6 +17,6 @@ q_to_x = [
 T = (1//2) * q_dot[1]^2
 V = -g * cos(q[1])
 Lexp = T - V # |> expand_derivatives |> simplify
-lag = Lagrangian(t, q, q_dot, Lexp, q_to_x);
+lag = Lagrangian(t, q, q_dot, Lexp, q_to_x)
 
-ham = hamiltonian(lag);
+ham = hamiltonian(lag)
