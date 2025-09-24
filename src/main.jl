@@ -56,7 +56,7 @@ function hamiltonian(lag::Lagrangian)
 
     # solve_for が失敗する場合は線形系として解く (T が2次形式の場合など)
     if isempty(sol)
-        M = [expand_derivatives(derivative(p[i], q_dot[j])) |> simplify for i in 1:n, j in 1:n]
+        M = [expand_derivatives(derivative(p_expr[i], q_dot[j])) |> simplify for i in 1:n, j in 1:n]
         try
             sol = inv(M) * collect(p)
         catch e
