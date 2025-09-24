@@ -1,7 +1,7 @@
 # 解析力学を扱うためのモジュール
 
 using ModelingToolkit
-using Symbolics: derivative, solve_for, lhss, rhss
+using Symbolics: derivative, solve_for
 
 """
     Lagrangian(t, q, q_dot, L, q_to_x=Vector{Num}())
