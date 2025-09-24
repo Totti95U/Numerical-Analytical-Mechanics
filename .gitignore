@@ -29,3 +29,4 @@ LocalPreferences.toml
 JuliaLocalPreferences.toml
 
 .vscode/
+memo.*
