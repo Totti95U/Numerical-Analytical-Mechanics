@@ -66,10 +66,9 @@ function hamiltonian(lag::Lagrangian)
 
     q_dot_to_p_dict = Dict(q_dot[i] => e for (i, e) in enumerate(sol))
     H = sum(p[i] * q_dot[i] for i in 1:n) - L
-    H = substitute(H, q_dot_to_p_dict) # |> expand_derivatives |> simplify
+    H = substitute(H, q_dot_to_p_dict)
 
     p_to_qdot = sol .|> Num
-    # p_to_qdot = simplify(p_to_qdot)
 
     return Hamiltonian(t, q, p, H, q_to_x, p_to_qdot)
 end
