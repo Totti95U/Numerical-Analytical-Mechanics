@@ -72,3 +72,61 @@ function hamiltonian(lag::Lagrangian)
 
     return Hamiltonian(t, q, p, H, q_to_x, p_to_qdot)
 end
+
+"""
+    solve(ham::Hamiltonian, qp0::Vector{Float64}, tspan::Tuple{Float64, Float64}; param::Dict{Num,Float64}, abstol=1e-9, reltol=1e-9)
+
+Solve the Hamiltonian system using leapfrog integration.
+"""
+function solve(ham::Hamiltonian, qp0::Vector{Float64}, tspan::Tuple{Float64, Float64}; pram::Dict{Num,Float64}, dt=1e-3)
+    t = ham.t
+    q = ham.q
+    p = ham.p
+    H = ham.H
+    n = length(q)
+    @variables (q_(t))[1:n]
+    @variables (p_(t))[1:n]
+
+    # substitute parameters
+    H = substitute(H, pram) |> simplify
+
+    # construct the hamiltonian system
+    dHdq = [expand_derivatives(derivative(H, q[i])) |> simplify for i in 1:n]
+    dHdp = [expand_derivatives(derivative(H, p[i])) |> simplify for i in 1:n]
+    dHdq_funcs = [build_function(dHdq[i], t, q..., p...; expression=Val{false}) for i in 1:n]
+    dHdp_funcs = [build_function(dHdp[i], t, q..., p...; expression=Val{false}) for i in 1:n]
+
+    # leapfrog integration
+    function leapfrog_step(q, p, t, dt)
+        # half step for p
+        p_half = similar(p)
+        q_new = similar(q)
+        p_new = similar(p)
+        for i in 1:n
+            p_half[i] = p[i] - 0.5 * dt * dHdq_funcs[i](t, q..., p...)
+        end
+        for i in 1:n
+            q_new[i] = q[i] + dt * dHdp_funcs[i](t + 0.5 * dt, q..., p_half...)
+        end
+        for i in 1:n
+            p_new[i] = p_half[i] - 0.5 * dt * dHdq_funcs[i](t + dt, q_new..., p_half...)
+        end
+        return q_new, p_new
+    end
+    # time integration
+    t0, tf = tspan
+    ts = collect(t0:dt:tf)
+    qf = qp0[1:n]
+    pf = qp0[n+1:end]
+    qs = qf
+    ps = pf
+    for ti in ts[2:end]
+        qf, pf = leapfrog_step(qf, pf, ti - dt, dt)
+        qs = hcat(qs, qf)
+        ps = hcat(ps, pf)
+    end
+
+    return ts, qs, ps
+end
+
+
