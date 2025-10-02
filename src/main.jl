@@ -146,6 +146,7 @@ end
 
 function in_cartesian(system::Lagrangian, q::Vector{Float64}, q_dot::Vector{Float64}; param=Dict{Num,Float64}())
     x = in_cartesian(system, q, param=param)
+    n = length(system.q)
 
     # transform q_dot to x_dot
     if length(q_dot) != n
@@ -162,6 +163,7 @@ end
 
 function in_cartesian(system::Hamiltonian, q::Vector{Float64}, p::Vector{Float64}; param=Dict{Num,Float64}())
     x = in_cartesian(system, q, param=param)
+    n = length(system.q)
 
     # transform p to q_dot
     if length(p) != n
